@@ -1,8 +1,18 @@
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Parking.Data;
+using Parking.Pages;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 
+//Настройка подключения к бд
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("StudentLibraryDb")));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
