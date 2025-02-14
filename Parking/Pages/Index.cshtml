@@ -1,10 +1,28 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Автопарковка";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container">
+    <h1 class="display-4 text-center">Автопарковка</h1>
+
+    <p class="lead text-center">
+        Добро пожаловать в проект <strong>“Автопарковка”</strong>! Здесь собрана информация о проекте.
+    </p>
+
+    <hr />
+
+    <h2>Описание проекта</h2>
+    <p>
+        <strong>Автопарковка</strong> – это система управления парковочными местами, позволяющая отслеживать автомобили, кто их ставит, и расположение парковочных мест.
+    </p>
+
+    <h3>Основные возможности:</h3>
+    <ul class="list-group">
+        <li class="list-group-item">Регистрация автомобилей, въезжающих и выезжающих с парковки.</li>
+        <li class="list-group-item">Отслеживание владельцев автомобилей.</li>
+        <li class="list-group-item">Управление статусом парковочных мест (свободно/занято).</li>
+        <li class="list-group-item">Хранение информации о времени парковки.</li>
+    </ul>
 </div>
