@@ -15,8 +15,8 @@ namespace Parking.Data
             //Database.Migrate(); // Автоматически применяет миграции и создаёт базу, если её нет
         } 
 
-        public DbSet<Car> Car { get; set; } //таблица Car, содержащая данные о книгах.
-        public DbSet<Parking_attendant> Parking_attendant { get; set; } //таблица Parking_attendant, содержащая данные о студентах.
-        public DbSet<Parking_space> Parking_space { get; set; } //таблица Parking_space, хранящая информацию о выдачах книг студентам.
+        public DbSet<Car> Cars { get; set; } //таблица Cars, содержащая данные о книгах.
+        public DbSet<Owner> Owners { get; set; } //таблица Parking_attendant, содержащая данные о студентах.
+        public DbSet<Place> Places { get; set; } //таблица Parking_space, хранящая информацию о выдачах книг студентам.
     }
 }
