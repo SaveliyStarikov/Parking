@@ -1,0 +1,65 @@
+﻿@page
+@model Parking.Pages.Avto_InfoModel
+
+@{
+    ViewData["Title"] = "Список автомобилей";
+}
+
+<h1>Список автомобилей</h1>
+
+<form method="post">
+    <input type="text" asp-for="NewCar.LicensePlate" placeholder="Госномер" required />
+    <input type="text" asp-for="NewCar.Brand" placeholder="Марка" required />
+    <input type="text" asp-for="NewCar.Model" placeholder="Модель" required />
+    <button type="submit" asp-page-handler="Add" class="btn btn-success">Добавить</button>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Госномер</th>
+            <th>Марка</th>
+            <th>Модель</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var car in Model.Cars)
+        {
+            <tr>
+                <td>@car.LicensePlate</td>
+                <td>@car.Brand</td>
+                <td>@car.Model</td>
+                <td>
+                    <form method="post" style="display:inline;">
+                        <input type="hidden" name="id" value="@car.Id" />
+                        <button type="submit" asp-page-handler="Delete" class="btn btn-danger">Удалить</button>
+                    </form>
+
+                    <button class="btn btn-warning" onclick="editCar(@car.Id, '@car.LicensePlate', '@car.Brand', '@car.Model')">Редактировать</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div id="editForm" style="display:none;">
+    <h2>Редактировать автомобиль</h2>
+    <form method="post">
+        <input type="hidden" id="editId" name="id" />
+        <input type="text" id="editLicensePlate" name="licensePlate" required />
+        <input type="text" id="editBrand" name="brand" required />
+        <input type="text" id="editModel" name="model" required />
+        <button type="submit" asp-page-handler="Edit" class="btn btn-primary">Сохранить</button>
+    </form>
+</div>
+
+<script>
+    function editCar(id, licensePlate, brand, model) {
+        document.getElementById("editId").value = id;
+        document.getElementById("editLicensePlate").value = licensePlate;
+        document.getElementById("editBrand").value = brand;
+        document.getElementById("editModel").value = model;
+        document.getElementById("editForm").style.display = "block";
+    }
+</script>
