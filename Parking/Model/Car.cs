@@ -14,5 +14,9 @@ namespace Parking.Model
         [StringLength(100, ErrorMessage = "Марка автомобиля не может быть длиннее 100 символов.")]
         public required string Author { get; set; }
 
+        [Required(ErrorMessage = "Требуется модель автомобиля.")]
+        [StringLength(100, ErrorMessage = "Модель автомобиля не может быть длиннее 100 символов.")]
+        public required string Model { get; set; }
+
     }
 }
