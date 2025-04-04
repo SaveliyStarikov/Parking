@@ -2,19 +2,24 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Parking.Model;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Parking.Pages
 {
     public class ParkingSpacesModel : PageModel
     {
-        [BindProperty]
-        public Place NewPlace { get; set; } 
+        public List<Car> Cars { get; set; } = new List<Car>();
 
-        public static List<Place> Places = new(); // Временное хранилище (замени на БД)
+        [BindProperty]
+        public int SelectedCarId { get; set; }  // ID выбранного авто
+
+        [BindProperty]
+        public Place NewPlace { get; set; } = new Place { Car = " " };
 
         public void OnGet()
         {
-            // Можно загрузить данные из БД
+           
+            Cars = new Avto_InfoModel().Cars;
         }
 
         public IActionResult OnPost()
@@ -22,10 +27,14 @@ namespace Parking.Pages
             if (!ModelState.IsValid)
                 return Page();
 
-            NewPlace.Id = Places.Count + 1;
-            Places.Add(NewPlace);
+            
+            var car = Cars.FirstOrDefault(c => c.Id == SelectedCarId);
+            if (car != null)
+            {
+                NewPlace.Car = $"{car.LicensePlate} - {car.Brand} {car.Model}"; 
+            }
 
-            return RedirectToPage("ParkingSpaces"); // Обновляем страницу
+            return RedirectToPage("ParkingSpaces");
         }
     }
 }
