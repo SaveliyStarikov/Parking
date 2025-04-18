@@ -7,12 +7,12 @@ namespace Parking.Model
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Требуется номер автомобиля.")]
-        [StringLength(6, ErrorMessage = "Заголовок не может быть длиннее 6 символов.")]
-        public required string Title { get; set; }
+        [StringLength(15, ErrorMessage = "Госномер не может быть длиннее 15 символов.")]
+        public required string LicensePlate { get; set; }
 
         [Required(ErrorMessage = "Требуется марка автомобиля.")]
         [StringLength(100, ErrorMessage = "Марка автомобиля не может быть длиннее 100 символов.")]
-        public required string Author { get; set; }
+        public required string Brand { get; set; }
 
         [Required(ErrorMessage = "Требуется модель автомобиля.")]
         [StringLength(100, ErrorMessage = "Модель автомобиля не может быть длиннее 100 символов.")]

@@ -1,0 +1,122 @@
+﻿@page
+@model Parking.Pages.Owner_InfoModel
+
+@{
+    ViewData["Title"] = "Информация о владельцах";
+}
+
+<h1>Информация о владельцах автомобилей</h1>
+
+<form method="post">
+    <div class="form-group">
+        <label asp-for="NewOwner.Name">Имя владельца</label>
+        <input type="text" asp-for="NewOwner.Name" class="form-control" placeholder="Имя владельца" required />
+    </div>
+    <div class="form-group">
+        <label asp-for="NewOwner.Email">Email</label>
+        <input type="email" asp-for="NewOwner.Email" class="form-control" placeholder="Электронная почта" />
+    </div>
+    <div class="form-group">
+        <label asp-for="NewOwner.Phone">Телефон</label>
+        <input type="tel" asp-for="NewOwner.Phone" class="form-control" placeholder="Номер телефона" />
+    </div>
+    <div class="form-group">
+        <label asp-for="NewOwner.CarId">Автомобиль</label>
+        <select asp-for="NewOwner.CarId" class="form-control" required>
+            <option value="">Выберите автомобиль</option>
+            @foreach (var car in Model.AvailableCars)
+            {
+                <option value="@car.Id">@car.Brand @car.Model (@car.LicensePlate)</option>
+            }
+        </select>
+    </div>
+    <button type="submit" asp-page-handler="Add" class="btn btn-success">Добавить владельца</button>
+</form>
+
+<table class="table table-striped mt-4">
+    <thead>
+        <tr>
+            <th>Имя владельца</th>
+            <th>Контактная информация</th>
+            <th>Автомобиль</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var owner in Model.Owners)
+        {
+            <tr>
+                <td>@owner.Name</td>
+                <td>
+                    @if (!string.IsNullOrEmpty(owner.Email))
+                    {
+                        <div>Email: @owner.Email</div>
+                    }
+                    @if (!string.IsNullOrEmpty(owner.Phone))
+                    {
+                        <div>Телефон: @owner.Phone</div>
+                    }
+                </td>
+                <td>
+                    @owner.Car.Brand @owner.Car.Model (@owner.Car.LicensePlate)
+                </td>
+                <td>
+                    <form method="post" style="display:inline;">
+                        <input type="hidden" name="id" value="@owner.Id" />
+                        <button type="submit" asp-page-handler="Delete" class="btn btn-danger">Удалить</button>
+                    </form>
+
+                    <button class="btn btn-warning" onclick="editOwner(
+                        @owner.Id,
+                        '@owner.Name',
+                        '@owner.Email',
+                        '@owner.Phone',
+                        @owner.CarId)">
+                        Редактировать
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div id="editForm" style="display:none;" class="mt-4">
+    <h2>Редактировать владельца</h2>
+    <form method="post">
+        <input type="hidden" id="editId" name="id" />
+        <div class="form-group">
+            <label for="editName">Имя владельца</label>
+            <input type="text" id="editName" name="name" class="form-control" required />
+        </div>
+        <div class="form-group">
+            <label for="editEmail">Email</label>
+            <input type="email" id="editEmail" name="email" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label for="editPhone">Телефон</label>
+            <input type="tel" id="editPhone" name="phone" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label for="editCarId">Автомобиль</label>
+            <select id="editCarId" name="carId" class="form-control" required>
+                <option value="">Выберите автомобиль</option>
+                @foreach (var car in Model.AvailableCars)
+                {
+                    <option value="@car.Id">@car.Brand @car.Model (@car.LicensePlate)</option>
+                }
+            </select>
+        </div>
+        <button type="submit" asp-page-handler="Edit" class="btn btn-primary">Сохранить</button>
+    </form>
+</div>
+
+<script>
+    function editOwner(id, name, email, phone, carId) {
+        document.getElementById("editId").value = id;
+        document.getElementById("editName").value = name;
+        document.getElementById("editEmail").value = email;
+        document.getElementById("editPhone").value = phone;
+        document.getElementById("editCarId").value = carId;
+        document.getElementById("editForm").style.display = "block";
+    }
+</script>
