@@ -1,6 +1,7 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
+    @RenderSection("Styles", required: false)
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Parking</title>
@@ -30,6 +31,9 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-page="/ParkingSpaces">Парковочные места</a>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-page="/Owner_Info">Владельцы</a>
+
                     </ul>
                 </div>
             </div>

@@ -85,3 +85,11 @@ body {
         padding: 10px;
         border: 1px solid #000;
     }
+.input-validation-error {
+    border-color: #dc3545 !important;
+}
+
+.field-validation-error {
+    color: #dc3545;
+    font-size: 0.875em;
+}
