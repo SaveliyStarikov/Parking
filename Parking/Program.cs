@@ -12,7 +12,7 @@ builder.Services.AddRazorPages();
 
 //Настройка подключения к бд
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("StudentLibraryDb")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ParkingDB")));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
