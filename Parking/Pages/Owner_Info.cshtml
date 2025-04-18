@@ -1,0 +1,138 @@
+﻿@page
+@model Parking.Pages.Owner_InfoModel
+@{
+    ViewData["Title"] = "Информация о владельцах";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<h2>Добавить нового владельца</h2>
+<form method="post" asp-page-handler="Add">
+    <div class="form-group">
+        <label asp-for="NewOwner.Name">Имя владельца</label>
+        <input asp-for="NewOwner.Name" class="form-control" required />
+        <span asp-validation-for="NewOwner.Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="NewOwner.Email">Email</label>
+        <input asp-for="NewOwner.Email" class="form-control" type="email" required />
+        <span asp-validation-for="NewOwner.Email" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="NewOwner.Phone">Телефон</label>
+        <input asp-for="NewOwner.Phone" class="form-control" required />
+        <span asp-validation-for="NewOwner.Phone" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="NewOwner.CarId">Автомобиль</label>
+        <select asp-for="NewOwner.CarId" asp-items="Model.CarList" class="form-control" required>
+            <option value="">-- Выберите автомобиль --</option>
+        </select>
+        <span asp-validation-for="NewOwner.CarId" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Добавить</button>
+</form>
+
+<h2>Список владельцев</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Имя</th>
+            <th>Email</th>
+            <th>Телефон</th>
+            <th>Автомобиль</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var owner in Model.Owners)
+        {
+            <tr>
+                <td>@owner.Name</td>
+                <td>@owner.Email</td>
+                <td>@owner.Phone</td>
+                <td>@owner.Car?.LicensePlate (@owner.Car?.Brand @owner.Car?.Model)</td>
+                <td>
+                    <form method="post" asp-page-handler="Delete" style="display:inline;">
+                        <input type="hidden" name="id" value="@owner.Id" />
+                        <button type="submit" class="btn btn-danger">Удалить</button>
+                    </form>
+                    <button class="btn btn-secondary edit-btn" data-id="@owner.Id" data-name="@owner.Name"
+                            data-email="@owner.Email" data-phone="@owner.Phone" data-carid="@owner.CarId">
+                        Редактировать
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Модальное окно для редактирования -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Редактировать владельца</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post" asp-page-handler="Edit">
+                <div class="modal-body">
+                    <input type="hidden" id="editId" name="id" />
+                    <div class="form-group">
+                        <label for="editName">Имя</label>
+                        <input type="text" class="form-control" id="editName" name="name" required>
+                        <span class="text-danger field-validation-valid" data-valmsg-for="name" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="editEmail">Email</label>
+                        <input type="email" class="form-control" id="editEmail" name="email" required>
+                        <span class="text-danger field-validation-valid" data-valmsg-for="email" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="editPhone">Телефон</label>
+                        <input type="text" class="form-control" id="editPhone" name="phone" required>
+                        <span class="text-danger field-validation-valid" data-valmsg-for="phone" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="editCarId">Автомобиль</label>
+                        <select class="form-control" id="editCarId" name="carId" required>
+                            @foreach (var car in Model.Cars)
+                            {
+                                <option value="@car.Id">@car.LicensePlate</option>
+                            }
+                        </select>
+                        <span class="text-danger field-validation-valid" data-valmsg-for="carId" data-valmsg-replace="true"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function () {
+            $('.edit-btn').click(function () {
+                var id = $(this).data('id');
+                var name = $(this).data('name');
+                var email = $(this).data('email') || '';
+                var phone = $(this).data('phone') || '';
+                var carId = $(this).data('carid');
+
+                $('#editId').val(id);
+                $('#editName').val(name);
+                $('#editEmail').val(email);
+                $('#editPhone').val(phone);
+                $('#editCarId').val(carId);
+
+                $('#editModal').modal('show');
+            });
+        });
+    </script>
+}
