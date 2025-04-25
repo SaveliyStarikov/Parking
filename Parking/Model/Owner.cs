@@ -14,6 +14,7 @@ namespace Parking.Model
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Имя владельца обязательно")]
+        [StringLength(100, ErrorMessage = "Максимум 100 символов")]
         public string Name { get; set; }
 
         [Required(ErrorMessage = "Email обязателен")]
@@ -24,8 +25,9 @@ namespace Parking.Model
         [RegularExpression(@"^\+?[0-9\s\-\(\)]+$", ErrorMessage = "Некорректный формат телефона")]
         public string Phone { get; set; }
 
+        [Display(Name = "Автомобиль")]
         [Required(ErrorMessage = "Автомобиль обязателен")]
-        public int CarId { get; set; }
-        public Car Car { get; set; }
+        public int? CarId { get; set; }
+        public Car? Car { get; set; }
     }
 }

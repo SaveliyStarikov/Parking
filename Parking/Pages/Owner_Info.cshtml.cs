@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Parking.Data;
 using Parking.Model;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Parking.Pages
@@ -19,38 +18,39 @@ namespace Parking.Pages
             _context = context;
         }
 
-        public List<Owner> Owners { get; set; } = new List<Owner>();
-        public List<Car> Cars { get; set; } = new List<Car>();
-        public SelectList CarList { get; set; }
-
         [BindProperty]
-        public Owner NewOwner { get; set; } = new Owner();
+        public Owner OwnerInput { get; set; } = new Owner();
+
+        public List<Owner> Owners { get; set; } = new List<Owner>();
+        public SelectList CarList { get; set; }
 
         public async Task OnGetAsync()
         {
-            Owners = await _context.Owners.Include(o => o.Car).ToListAsync();
-            Cars = await _context.Cars.ToListAsync();
-            CarList = new SelectList(Cars, "Id", "LicensePlate");
+            await LoadDataAsync();
+        }
+
+        private async Task LoadDataAsync()
+        {
+            Owners = await _context.Owners
+                .Include(o => o.Car)
+                .ToListAsync();
+
+            CarList = new SelectList(
+                await _context.Cars.ToListAsync(),
+                "Id",
+                "LicensePlate");
         }
 
         public async Task<IActionResult> OnPostAddAsync()
         {
-            // ”прощЄнна€ логика без сложных проверок
-            var car = await _context.Cars.FindAsync(NewOwner.CarId);
-            if (car == null) return Page();
-
-            var owner = new Owner
+            if (!ModelState.IsValid)
             {
-                Name = NewOwner.Name,
-                Email = NewOwner.Email,
-                Phone = NewOwner.Phone,
-                CarId = NewOwner.CarId,
-                Car = car
-            };
+                await LoadDataAsync();
+                return Page();
+            }
 
-            _context.Owners.Add(owner);
+            _context.Owners.Add(OwnerInput);
             await _context.SaveChangesAsync();
-
             return RedirectToPage();
         }
 
@@ -65,16 +65,21 @@ namespace Parking.Pages
             return RedirectToPage();
         }
 
-        public async Task<IActionResult> OnPostEditAsync(int id, string name, string email, string phone, int carId)
+        public async Task<IActionResult> OnPostEditAsync()
         {
-            var owner = await _context.Owners.FindAsync(id);
-            if (owner != null)
+            if (!ModelState.IsValid)
             {
-                owner.Name = name;
-                owner.Email = email;
-                owner.Phone = phone;
-                owner.CarId = carId;
-                owner.Car = await _context.Cars.FindAsync(carId);
+                await LoadDataAsync();
+                return Page();
+            }
+
+            var existingOwner = await _context.Owners.FindAsync(OwnerInput.Id);
+            if (existingOwner != null)
+            {
+                existingOwner.Name = OwnerInput.Name;
+                existingOwner.Email = OwnerInput.Email;
+                existingOwner.Phone = OwnerInput.Phone;
+                existingOwner.CarId = OwnerInput.CarId;
 
                 await _context.SaveChangesAsync();
             }

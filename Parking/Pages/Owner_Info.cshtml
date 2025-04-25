@@ -4,135 +4,191 @@
     ViewData["Title"] = "Информация о владельцах";
 }
 
-<h1>@ViewData["Title"]</h1>
-
-<h2>Добавить нового владельца</h2>
-<form method="post" asp-page-handler="Add">
-    <div class="form-group">
-        <label asp-for="NewOwner.Name">Имя владельца</label>
-        <input asp-for="NewOwner.Name" class="form-control" required />
-        <span asp-validation-for="NewOwner.Name" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="NewOwner.Email">Email</label>
-        <input asp-for="NewOwner.Email" class="form-control" type="email" required />
-        <span asp-validation-for="NewOwner.Email" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="NewOwner.Phone">Телефон</label>
-        <input asp-for="NewOwner.Phone" class="form-control" required />
-        <span asp-validation-for="NewOwner.Phone" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="NewOwner.CarId">Автомобиль</label>
-        <select asp-for="NewOwner.CarId" asp-items="Model.CarList" class="form-control" required>
-            <option value="">-- Выберите автомобиль --</option>
-        </select>
-        <span asp-validation-for="NewOwner.CarId" class="text-danger"></span>
-    </div>
-    <button type="submit" class="btn btn-primary">Добавить</button>
-</form>
-
-<h2>Список владельцев</h2>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Имя</th>
-            <th>Email</th>
-            <th>Телефон</th>
-            <th>Автомобиль</th>
-            <th>Действия</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var owner in Model.Owners)
-        {
-            <tr>
-                <td>@owner.Name</td>
-                <td>@owner.Email</td>
-                <td>@owner.Phone</td>
-                <td>@owner.Car?.LicensePlate (@owner.Car?.Brand @owner.Car?.Model)</td>
-                <td>
-                    <form method="post" asp-page-handler="Delete" style="display:inline;">
-                        <input type="hidden" name="id" value="@owner.Id" />
-                        <button type="submit" class="btn btn-danger">Удалить</button>
-                    </form>
-                    <button class="btn btn-secondary edit-btn" data-id="@owner.Id" data-name="@owner.Name"
-                            data-email="@owner.Email" data-phone="@owner.Phone" data-carid="@owner.CarId">
-                        Редактировать
-                    </button>
-                </td>
-            </tr>
+@section Styles {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        .card-header {
+            padding: 1rem 1.5rem;
         }
-    </tbody>
-</table>
 
-<!-- Модальное окно для редактирования -->
-<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Редактировать владельца</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        .form-label {
+            font-weight: 500;
+        }
+
+        .card-footer {
+            padding: 1rem 1.5rem;
+        }
+    </style>
+}
+
+<h1 class="mb-4">@ViewData["Title"]</h1>
+
+<!-- Форма добавления -->
+<div class="card mb-4 shadow">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">Добавить нового владельца</h5>
+    </div>
+    <div class="card-body">
+        <form method="post" asp-page-handler="Add">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="OwnerInput.Name" class="form-label"></label>
+                    <input asp-for="OwnerInput.Name" class="form-control" placeholder="Иван Иванов">
+                    <span asp-validation-for="OwnerInput.Name" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="OwnerInput.Email" class="form-label"></label>
+                    <input asp-for="OwnerInput.Email" class="form-control" placeholder="example@mail.com">
+                    <span asp-validation-for="OwnerInput.Email" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="OwnerInput.Phone" class="form-label"></label>
+                    <input asp-for="OwnerInput.Phone" class="form-control" placeholder="+79001234567">
+                    <span asp-validation-for="OwnerInput.Phone" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="OwnerInput.CarId" class="form-label"></label>
+                    <select asp-for="OwnerInput.CarId" asp-items="Model.CarList" class="form-select">
+                        <option value="">-- Выберите автомобиль --</option>
+                    </select>
+                    <span asp-validation-for="OwnerInput.CarId" class="text-danger"></span>
+                </div>
+
+                <div class="col-12">
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="bi bi-person-plus"></i> Добавить
+                    </button>
+                </div>
             </div>
+        </form>
+    </div>
+</div>
+
+<!-- Список владельцев -->
+<div class="row row-cols-1 row-cols-md-2 g-4">
+    @foreach (var owner in Model.Owners)
+    {
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-0">@owner.Name</h5>
+                </div>
+                <div class="card-body">
+                    <div class="card-text">
+                        <dl class="row mb-0">
+                            <dt class="col-sm-4">Email</dt>
+                            <dd class="col-sm-8">@owner.Email</dd>
+
+                            <dt class="col-sm-4">Телефон</dt>
+                            <dd class="col-sm-8">@owner.Phone</dd>
+
+                            <dt class="col-sm-4">Автомобиль</dt>
+                            <dd class="col-sm-8 text-muted">
+                                @(owner.Car?.LicensePlate ?? "Не указан")
+                                @if (owner.Car != null)
+                                {
+                                    <span>(@owner.Car.Brand @owner.Car.Model)</span>
+                                }
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <div class="d-flex gap-2 justify-content-end">
+                        <button class="btn btn-warning btn-sm"
+                                data-bs-toggle="modal"
+                                data-bs-target="#editModal"
+                                data-id="@owner.Id"
+                                data-name="@owner.Name"
+                                data-email="@owner.Email"
+                                data-phone="@owner.Phone"
+                                data-carid="@owner.CarId">
+                            <i class="bi bi-pencil"></i> Изменить
+                        </button>
+
+                        <form method="post" class="d-inline">
+                            <input type="hidden" name="id" value="@owner.Id" />
+                            <button type="submit"
+                                    asp-page-handler="Delete"
+                                    class="btn btn-danger btn-sm"
+                                    onclick="return confirm('Удалить этого владельца?')">
+                                <i class="bi bi-trash"></i> Удалить
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Модальное окно редактирования -->
+<div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
             <form method="post" asp-page-handler="Edit">
+                <div class="modal-header">
+                    <h5 class="modal-title">Редактировать владельца</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
                 <div class="modal-body">
-                    <input type="hidden" id="editId" name="id" />
-                    <div class="form-group">
-                        <label for="editName">Имя</label>
-                        <input type="text" class="form-control" id="editName" name="name" required>
-                        <span class="text-danger field-validation-valid" data-valmsg-for="name" data-valmsg-replace="true"></span>
+                    <input type="hidden" asp-for="OwnerInput.Id" id="editId" />
+
+                    <div class="mb-3">
+                        <label asp-for="OwnerInput.Name" class="form-label"></label>
+                        <input asp-for="OwnerInput.Name" class="form-control" id="editName">
+                        <span asp-validation-for="OwnerInput.Name" class="text-danger"></span>
                     </div>
-                    <div class="form-group">
-                        <label for="editEmail">Email</label>
-                        <input type="email" class="form-control" id="editEmail" name="email" required>
-                        <span class="text-danger field-validation-valid" data-valmsg-for="email" data-valmsg-replace="true"></span>
+
+                    <div class="mb-3">
+                        <label asp-for="OwnerInput.Email" class="form-label"></label>
+                        <input asp-for="OwnerInput.Email" class="form-control" id="editEmail">
+                        <span asp-validation-for="OwnerInput.Email" class="text-danger"></span>
                     </div>
-                    <div class="form-group">
-                        <label for="editPhone">Телефон</label>
-                        <input type="text" class="form-control" id="editPhone" name="phone" required>
-                        <span class="text-danger field-validation-valid" data-valmsg-for="phone" data-valmsg-replace="true"></span>
+
+                    <div class="mb-3">
+                        <label asp-for="OwnerInput.Phone" class="form-label"></label>
+                        <input asp-for="OwnerInput.Phone" class="form-control" id="editPhone">
+                        <span asp-validation-for="OwnerInput.Phone" class="text-danger"></span>
                     </div>
-                    <div class="form-group">
-                        <label for="editCarId">Автомобиль</label>
-                        <select class="form-control" id="editCarId" name="carId" required>
-                            @foreach (var car in Model.Cars)
-                            {
-                                <option value="@car.Id">@car.LicensePlate</option>
-                            }
+
+                    <div class="mb-3">
+                        <label asp-for="OwnerInput.CarId" class="form-label"></label>
+                        <select asp-for="OwnerInput.CarId" asp-items="Model.CarList" class="form-select" id="editCarId">
+                            <option value="">-- Выберите автомобиль --</option>
                         </select>
-                        <span class="text-danger field-validation-valid" data-valmsg-for="carId" data-valmsg-replace="true"></span>
+                        <span asp-validation-for="OwnerInput.CarId" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
                     <button type="submit" class="btn btn-primary">Сохранить</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
     <script>
-        $(document).ready(function () {
-            $('.edit-btn').click(function () {
-                var id = $(this).data('id');
-                var name = $(this).data('name');
-                var email = $(this).data('email') || '';
-                var phone = $(this).data('phone') || '';
-                var carId = $(this).data('carid');
-
-                $('#editId').val(id);
-                $('#editName').val(name);
-                $('#editEmail').val(email);
-                $('#editPhone').val(phone);
-                $('#editCarId').val(carId);
-
-                $('#editModal').modal('show');
-            });
+        // Инициализация модального окна редактирования
+        document.getElementById('editModal').addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            document.getElementById('editId').value = button.getAttribute('data-id');
+            document.getElementById('editName').value = button.getAttribute('data-name');
+            document.getElementById('editEmail').value = button.getAttribute('data-email');
+            document.getElementById('editPhone').value = button.getAttribute('data-phone');
+            document.getElementById('editCarId').value = button.getAttribute('data-carid');
         });
     </script>
 }
