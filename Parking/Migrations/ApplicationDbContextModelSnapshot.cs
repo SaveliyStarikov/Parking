@@ -47,7 +47,7 @@ namespace Parking.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Cars");
+                    b.ToTable("Cars", (string)null);
                 });
 
             modelBuilder.Entity("Parking.Model.Owner", b =>
@@ -77,7 +77,7 @@ namespace Parking.Migrations
 
                     b.HasIndex("CarId");
 
-                    b.ToTable("Owners");
+                    b.ToTable("Owners", (string)null);
                 });
 
             modelBuilder.Entity("Parking.Model.Place", b =>
@@ -102,7 +102,7 @@ namespace Parking.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Places");
+                    b.ToTable("Places", (string)null);
                 });
 
             modelBuilder.Entity("Parking.Model.Owner", b =>

@@ -1,65 +1,133 @@
 ﻿@page
 @model Parking.Pages.Avto_InfoModel
-
 @{
     ViewData["Title"] = "Список автомобилей";
 }
 
-<h1>Список автомобилей</h1>
+<h1>@ViewData["Title"]</h1>
 
-<form method="post">
-    <input type="text" asp-for="NewCar.LicensePlate" placeholder="Госномер" required />
-    <input type="text" asp-for="NewCar.Brand" placeholder="Марка" required />
-    <input type="text" asp-for="NewCar.Model" placeholder="Модель" required />
-    <button type="submit" asp-page-handler="Add" class="btn btn-success">Добавить</button>
-</form>
+<!-- Форма добавления -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="post" asp-page-handler="Add" class="needs-validation" novalidate>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label asp-for="CarInput.LicensePlate" class="form-label"></label>
+                    <input asp-for="CarInput.LicensePlate" class="form-control" placeholder="А123БВ777">
+                    <span asp-validation-for="CarInput.LicensePlate" class="text-danger"></span>
+                </div>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Госномер</th>
-            <th>Марка</th>
-            <th>Модель</th>
-            <th>Действия</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var car in Model.Cars)
-        {
-            <tr>
-                <td>@car.LicensePlate</td>
-                <td>@car.Brand</td>
-                <td>@car.Model</td>
-                <td>
-                    <form method="post" style="display:inline;">
-                        <input type="hidden" name="id" value="@car.Id" />
-                        <button type="submit" asp-page-handler="Delete" class="btn btn-danger">Удалить</button>
-                    </form>
+                <div class="col-md-4 mb-3">
+                    <label asp-for="CarInput.Brand" class="form-label"></label>
+                    <input asp-for="CarInput.Brand" class="form-control" placeholder="Toyota">
+                    <span asp-validation-for="CarInput.Brand" class="text-danger"></span>
+                </div>
 
-                    <button class="btn btn-warning" onclick="editCar(@car.Id, '@car.LicensePlate', '@car.Brand', '@car.Model')">Редактировать</button>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-
-<div id="editForm" style="display:none;">
-    <h2>Редактировать автомобиль</h2>
-    <form method="post">
-        <input type="hidden" id="editId" name="id" />
-        <input type="text" id="editLicensePlate" name="licensePlate" required />
-        <input type="text" id="editBrand" name="brand" required />
-        <input type="text" id="editModel" name="model" required />
-        <button type="submit" asp-page-handler="Edit" class="btn btn-primary">Сохранить</button>
-    </form>
+                <div class="col-md-4 mb-3">
+                    <label asp-for="CarInput.Model" class="form-label"></label>
+                    <input asp-for="CarInput.Model" class="form-control" placeholder="Camry">
+                    <span asp-validation-for="CarInput.Model" class="text-danger"></span>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-success">Добавить</button>
+        </form>
+    </div>
 </div>
 
-<script>
-    function editCar(id, licensePlate, brand, model) {
-        document.getElementById("editId").value = id;
-        document.getElementById("editLicensePlate").value = licensePlate;
-        document.getElementById("editBrand").value = brand;
-        document.getElementById("editModel").value = model;
-        document.getElementById("editForm").style.display = "block";
+<!-- Карточки с автомобилями -->
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    @foreach (var car in Model.Cars)
+    {
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">@car.Brand @car.Model</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">@car.LicensePlate</h6>
+
+                    <div class="d-flex justify-content-between mt-3">
+                        <form method="post" class="d-inline">
+                            <input type="hidden" name="id" value="@car.Id" />
+                            <button type="submit" asp-page-handler="Delete" class="btn btn-danger btn-sm"
+                                    onclick="return confirm('Удалить этот автомобиль?')">
+                                Удалить
+                            </button>
+                        </form>
+
+                        <button class="btn btn-warning btn-sm"
+                                data-bs-toggle="modal"
+                                data-bs-target="#editModal"
+                                data-id="@car.Id"
+                                data-licenseplate="@car.LicensePlate"
+                                data-brand="@car.Brand"
+                                data-model="@car.Model">
+                            Редактировать
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     }
-</script>
+</div>
+
+<!-- Модальное окно редактирования -->
+<div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" asp-page-handler="Edit">
+                <div class="modal-header">
+                    <h5 class="modal-title">Редактировать автомобиль</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" asp-for="CarInput.Id" id="editId" />
+
+                    <div class="mb-3">
+                        <label asp-for="CarInput.LicensePlate" class="form-label"></label>
+                        <input asp-for="CarInput.LicensePlate" class="form-control" id="editLicensePlate">
+                        <span asp-validation-for="CarInput.LicensePlate" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="CarInput.Brand" class="form-label"></label>
+                        <input asp-for="CarInput.Brand" class="form-control" id="editBrand">
+                        <span asp-validation-for="CarInput.Brand" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="CarInput.Model" class="form-label"></label>
+                        <input asp-for="CarInput.Model" class="form-control" id="editModel">
+                        <span asp-validation-for="CarInput.Model" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        // Заполнение модального окна данными
+        document.getElementById('editModal').addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            document.getElementById('editId').value = button.getAttribute('data-id');
+            document.getElementById('editLicensePlate').value = button.getAttribute('data-licenseplate');
+            document.getElementById('editBrand').value = button.getAttribute('data-brand');
+            document.getElementById('editModel').value = button.getAttribute('data-model');
+        });
+
+        // Подтверждение удаления
+        document.querySelectorAll('[asp-page-handler="Delete"]').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                if (!confirm('Вы уверены, что хотите удалить этот автомобиль?')) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+}

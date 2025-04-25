@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Parking.Data;
 using Parking.Model;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Parking.Pages
@@ -13,37 +12,34 @@ namespace Parking.Pages
     {
         private readonly ApplicationDbContext _context;
 
-        // Конструктор принимает контекст базы данных через DI (Dependency Injection)
         public Avto_InfoModel(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // Список автомобилей, загружаемый из базы данных
-        public List<Car> Cars { get; set; } = new List<Car>();
+        public List<Car> Cars { get; set; }
 
-        // Проперти для нового автомобиля
         [BindProperty]
-        public Car NewCar { get; set; } = new Car();
+        public Car CarInput { get; set; }
 
-        // Метод для обработки GET-запроса и загрузки данных
         public async Task OnGetAsync()
         {
             Cars = await _context.Cars.ToListAsync();
         }
 
-        // Метод для добавления нового автомобиля в базу данных
         public async Task<IActionResult> OnPostAddAsync()
         {
-            if (!string.IsNullOrEmpty(NewCar.LicensePlate) && !string.IsNullOrEmpty(NewCar.Brand) && !string.IsNullOrEmpty(NewCar.Model))
+            if (!ModelState.IsValid)
             {
-                _context.Cars.Add(NewCar);
-                await _context.SaveChangesAsync();
+                Cars = await _context.Cars.ToListAsync();
+                return Page();
             }
-            return RedirectToPage(); // Перезагружаем страницу
+
+            _context.Cars.Add(CarInput);
+            await _context.SaveChangesAsync();
+            return RedirectToPage();
         }
 
-        // Метод для удаления автомобиля по Id
         public async Task<IActionResult> OnPostDeleteAsync(int id)
         {
             var car = await _context.Cars.FindAsync(id);
@@ -52,22 +48,26 @@ namespace Parking.Pages
                 _context.Cars.Remove(car);
                 await _context.SaveChangesAsync();
             }
-            return RedirectToPage(); // Перезагружаем страницу
+            return RedirectToPage();
         }
 
-        // Метод для редактирования информации об автомобиле
-        public async Task<IActionResult> OnPostEditAsync(int id, string licensePlate, string brand, string model)
+        public async Task<IActionResult> OnPostEditAsync()
         {
-            var car = await _context.Cars.FindAsync(id);
+            if (!ModelState.IsValid)
+            {
+                Cars = await _context.Cars.ToListAsync();
+                return Page();
+            }
+
+            var car = await _context.Cars.FindAsync(CarInput.Id);
             if (car != null)
             {
-                car.LicensePlate = licensePlate;
-                car.Brand = brand;
-                car.Model = model;
-
+                car.LicensePlate = CarInput.LicensePlate;
+                car.Brand = CarInput.Brand;
+                car.Model = CarInput.Model;
                 await _context.SaveChangesAsync();
             }
-            return RedirectToPage(); // Перезагружаем страницу
+            return RedirectToPage();
         }
     }
 }
