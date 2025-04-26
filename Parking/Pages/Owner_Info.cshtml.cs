@@ -65,16 +65,24 @@ namespace Parking.Pages
             return RedirectToPage();
         }
 
-        public async Task<IActionResult> OnPostEditAsync(int id, string name, string email, string phone, int carId)
+        public async Task<IActionResult> OnPostEditAsync()
         {
-            var owner = await _context.Owners.FindAsync(id);
+            if (!ModelState.IsValid)
+            {
+                Owners = await _context.Owners.Include(o => o.Car).ToListAsync();
+                Cars = await _context.Cars.ToListAsync();
+                CarList = new SelectList(Cars, "Id", "LicensePlate");
+                return Page();
+            }
+
+            var owner = await _context.Owners.FindAsync(NewOwner.Id);
             if (owner != null)
             {
-                owner.Name = name;
-                owner.Email = email;
-                owner.Phone = phone;
-                owner.CarId = carId;
-                owner.Car = await _context.Cars.FindAsync(carId);
+                owner.Name = NewOwner.Name;
+                owner.Email = NewOwner.Email;
+                owner.Phone = NewOwner.Phone;
+                owner.CarId = NewOwner.CarId;
+                owner.Car = await _context.Cars.FindAsync(NewOwner.CarId);
 
                 await _context.SaveChangesAsync();
             }

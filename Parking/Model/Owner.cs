@@ -1,31 +1,32 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using static System.Reflection.Metadata.BlobBuilder;
 
 namespace Parking.Model
 {
     public class Owner
     {
-        public Owner()
-        {
-            Name = string.Empty;
-            Car = new Car();
-        }
-
+        
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "Имя владельца обязательно")]
-        public string Name { get; set; }
+        [Display(Name = "Имя владельца")]
+        [Required(ErrorMessage = "Поле 'Имя владельца' обязательно для заполнения")]
+        public string? Name { get; set; }
 
-        [Required(ErrorMessage = "Email обязателен")]
+        [Display(Name = "Email")]
+        [Required(ErrorMessage = "Поле 'Email' обязательно для заполнения")]
         [EmailAddress(ErrorMessage = "Некорректный формат email")]
-        public string Email { get; set; }
+        public string? Email { get; set; }
 
-        [Required(ErrorMessage = "Телефон обязателен")]
-        [RegularExpression(@"^\+?[0-9\s\-\(\)]+$", ErrorMessage = "Некорректный формат телефона")]
-        public string Phone { get; set; }
+        [Display(Name = "Телефон")]
+        [Required(ErrorMessage = "Поле 'Телефон' обязательно для заполнения")]
+        [RegularExpression(@"^\+?[0-9\s\-\(\)]+$",
+            ErrorMessage = "Телефон должен содержать только цифры и символы ()-+")]
+        public string? Phone { get; set; }
 
-        [Required(ErrorMessage = "Автомобиль обязателен")]
-        public int CarId { get; set; }
-        public Car Car { get; set; }
+        [Display(Name = "Автомобиль")]
+        [Required(ErrorMessage = "Необходимо указать автомобиль")]
+        public int? CarId { get; set; }
+
+        [Display(Name = "Автомобиль")]
+        public Car? Car { get; set; }
     }
 }
