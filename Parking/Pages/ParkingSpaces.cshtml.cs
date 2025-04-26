@@ -1,8 +1,9 @@
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using Parking.Data;
 using Parking.Model;
-using Parking.Data; // для подключения контекста
-using System.Linq;
+using System.ComponentModel.DataAnnotations;
 
 namespace Parking.Pages
 {
@@ -15,71 +16,126 @@ namespace Parking.Pages
             _context = context;
         }
 
-        public List<Car> Cars { get; set; } = new List<Car>();
+        public List<Place> Places { get; set; } = new();
+        public List<Car> Cars { get; set; } = new();
+        public List<Owner> Owners { get; set; } = new(); // Новый список владельцев
 
         [BindProperty]
+        [Required(ErrorMessage = "Пожалуйста, выберите автомобиль.")]
         public int? SelectedCarId { get; set; }
 
         [BindProperty]
-        public Place NewPlace { get; set; } = new Place
-        {
-            Car = " ",
-            StartDate = null,
-            EndDate = null
-        };
+        public int? SelectedPlaceId { get; set; }
+
+        [BindProperty]
+        [Display(Name = "Дата начала")]
+        [Required(ErrorMessage = "Дата начала обязательна")]
+        public DateTime? StartDate { get; set; }
+
+        [BindProperty]
+        [Display(Name = "Дата окончания")]
+        [Required(ErrorMessage = "Дата окончания обязательна")]
+        public DateTime? EndDate { get; set; }
 
         public void OnGet()
         {
-            Cars = _context.Cars.ToList();
-
-            if (NewPlace.StartDate == null)
-            {
-                NewPlace.StartDate = DateTime.Now;
-            }
+            LoadData();
         }
 
-        public IActionResult OnPost()
+        public IActionResult OnPostAddPlace()
         {
-            Cars = _context.Cars.ToList();
-
-            if (SelectedCarId == null || SelectedCarId == 0)
+            var newPlace = new Place
             {
-                ModelState.AddModelError("SelectedCarId", "Пожалуйста, выберите автомобиль.");
+                Name = $"Место {_context.Places.Count() + 1}",
+                Status = "Свободно"
+            };
+
+            _context.Places.Add(newPlace);
+            _context.SaveChanges();
+
+            return RedirectToPage();
+        }
+
+        public IActionResult OnPostOccupyPlace()
+        {
+            LoadData();
+
+            if (SelectedPlaceId == null || SelectedCarId == null || StartDate == null || EndDate == null)
+            {
+                ModelState.AddModelError(string.Empty, "Пожалуйста, заполните все поля для занятия места.");
+                return Page();
             }
 
-            if (NewPlace.StartDate == null)
+            if (EndDate < StartDate)
             {
-                ModelState.AddModelError("NewPlace.StartDate", "Пожалуйста, введите дату начала.");
+                ModelState.AddModelError(nameof(EndDate), "Дата окончания не может быть раньше даты начала.");
+                return Page();
             }
 
-            if (NewPlace.EndDate == null)
+            var place = _context.Places.FirstOrDefault(p => p.Id == SelectedPlaceId);
+            var car = _context.Cars.FirstOrDefault(c => c.Id == SelectedCarId);
+
+            if (place == null || car == null)
             {
-                ModelState.AddModelError("NewPlace.EndDate", "Пожалуйста, введите дату окончания.");
+                ModelState.AddModelError(string.Empty, "Не удалось найти выбранное место или автомобиль.");
+                return Page();
             }
 
-            if (NewPlace.StartDate != null &&
-                NewPlace.EndDate != null &&
-                NewPlace.EndDate < NewPlace.StartDate)
-            {
-                ModelState.AddModelError("NewPlace.EndDate", "Дата окончания не может быть раньше даты начала.");
-            }
+            place.Car = $"{car.LicensePlate} - {car.Brand} {car.Model}";
+            place.StartDate = StartDate;
+            place.EndDate = EndDate;
+            place.Status = "Занято";
+
+            TryValidateModel(place);
 
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            var car = Cars.FirstOrDefault(c => c.Id == SelectedCarId);
-            if (car != null)
+            _context.SaveChanges();
+            return RedirectToPage();
+        }
+
+        public IActionResult OnPostFreePlace(int id)
+        {
+            var place = _context.Places.FirstOrDefault(p => p.Id == id);
+            if (place != null)
             {
-                NewPlace.Car = $"{car.LicensePlate} - {car.Brand} {car.Model}";
+                place.Car = null;
+                place.StartDate = null;
+                place.EndDate = null;
+                place.Status = "Свободно";
+                _context.SaveChanges();
             }
+            return RedirectToPage();
+        }
 
-            // Тут можно сохранить место в базу, если захочешь:
-            // _context.Places.Add(NewPlace);
-            // _context.SaveChanges();
+        public IActionResult OnPostDeletePlace(int id)
+        {
+            var place = _context.Places.FirstOrDefault(p => p.Id == id);
+            if (place != null)
+            {
+                _context.Places.Remove(place);
+                _context.SaveChanges();
+            }
+            return RedirectToPage();
+        }
 
-            return RedirectToPage("ParkingSpaces");
+        private void LoadData()
+        {
+            Places = _context.Places.ToList();
+            Cars = _context.Cars.ToList();
+            Owners = _context.Owners.Include(o => o.Car).ToList(); // Подгружаем владельцев
+        }
+
+        public Owner? GetOwnerByCarInfo(string? carInfo)
+        {
+            if (string.IsNullOrEmpty(carInfo))
+                return null;
+
+            var licensePlate = carInfo.Split(" - ")[0]; // Извлекаем госномер
+            return Owners.FirstOrDefault(o => o.Car != null && o.Car.LicensePlate == licensePlate);
         }
     }
 }

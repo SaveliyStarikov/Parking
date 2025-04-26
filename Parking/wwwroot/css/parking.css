@@ -1,0 +1,97 @@
+﻿body {
+    background: #f4f6f8;
+}
+
+.page-title {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    color: #343a40;
+}
+
+.add-place-form {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
+    padding: 0 1rem;
+}
+
+.tile {
+    background: linear-gradient(135deg, #ffffff, #f9f9ff);
+    padding: 1.5rem;
+    border-radius: 16px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+    .tile.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .tile:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    }
+
+.tile-free {
+    border-top: 5px solid #28a745;
+}
+
+.tile-occupied {
+    border-top: 5px solid #dc3545;
+}
+
+.tile-title {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: #212529;
+}
+
+.form-inline {
+    margin-top: 1rem;
+}
+
+button {
+    transition: transform 0.2s ease;
+}
+
+    button:hover {
+        transform: translateY(-2px);
+    }
+
+/* Кнопки */
+.btn {
+    font-size: 1rem;
+    border-radius: 12px;
+}
+
+/* Анимация появления карточек одна за одной */
+.tile:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.tile:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.tile:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.tile:nth-child(4) {
+    animation-delay: 0.4s;
+}
+.text-danger {
+    color: #dc3545;
+    font-size: 0.875rem; 
+    margin-top: 0.25rem;
+    display: block;
+}
