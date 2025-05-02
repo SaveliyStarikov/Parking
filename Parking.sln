@@ -5,6 +5,8 @@ VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parking", "Parking\Parking.csproj", "{BEFB5F05-A4BF-4049-9317-92F0E06D9EC2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parking.Tests", "Parking.Tests\Parking.Tests.csproj", "{DB54E339-5882-4457-9095-E8A19C27B62B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,8 +17,15 @@ Global
 		{BEFB5F05-A4BF-4049-9317-92F0E06D9EC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BEFB5F05-A4BF-4049-9317-92F0E06D9EC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BEFB5F05-A4BF-4049-9317-92F0E06D9EC2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB54E339-5882-4457-9095-E8A19C27B62B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB54E339-5882-4457-9095-E8A19C27B62B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB54E339-5882-4457-9095-E8A19C27B62B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB54E339-5882-4457-9095-E8A19C27B62B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BF4AF766-EA74-49F8-BCBC-47450B35AC5D}
 	EndGlobalSection
 EndGlobal
