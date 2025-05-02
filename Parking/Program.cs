@@ -9,6 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddControllers();
 
 //Настройка подключения к бд
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -31,5 +33,9 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapRazorPages();
+app.MapControllers();
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
