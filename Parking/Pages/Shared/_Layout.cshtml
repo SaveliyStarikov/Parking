@@ -1,5 +1,11 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+<style>
+    footer {
+        margin-top: auto;
+        width: 100%;
+    }
+</style>
 <head>
     @RenderSection("Styles", required: false)
     <meta charset="utf-8" />
@@ -20,14 +26,9 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
+                      
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
-                        </li> 
-                        <li class="nav-item">
-                        <a class="nav-link text-dark" asp-page="/Avto_Info">Авто Инфо</a>
+                        <a class="nav-link text-dark" asp-page="/Avto_Info">Информация об автомобилях</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-page="/ParkingSpaces">Парковочные места</a>
@@ -45,7 +46,8 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+
+    <footer>
         <div class="container">
             &copy; 2025 - Parking - <a asp-area="" asp-page="/Privacy">Privacy</a>
         </div>
