@@ -1,0 +1,321 @@
+﻿@page
+@model Parking.Pages.LoginModel
+@{
+	ViewData["Title"] = "Вход";
+}
+<style>
+    :root {
+        --primary-gradient: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+        --primary-light: #2575fc;
+        --primary-dark: #6a11cb;
+        --text-muted: #6c757d;
+        --light-gray: #f8f9fa;
+        --lighter-gray: #f0f0f0;
+        --border-color: #e0e0e0;
+        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
+        --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        /* Переменные для тёмной и светлой темы */
+        --card-bg-light: #ffffff;
+        --card-bg-dark: #121212;
+        --input-bg-light: #f0f0f0;
+        --input-bg-dark: #2c2c2c;
+        --input-text-light: #000000;
+        --input-text-dark: #ffffff;
+        --input-border-light: #e0e0e0;
+        --input-border-dark: #444444;
+        --register-gradient-light: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+        --register-gradient-dark: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+        --register-gradient: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    }
+
+    body {
+        background: #ffffff; /* Белый фон */
+        min-height: 100vh;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+        body.dark-theme {
+            background: #000000 !important;
+            color: #e0e0e0;
+        }
+
+            body.dark-theme .login-card {
+                background: var(--card-bg-dark);
+                box-shadow: 0 10px 15px rgba(0, 0, 0, 0.5);
+            }
+
+            body.dark-theme .form-label,
+            body.dark-theme .register-link,
+            body.dark-theme .register-link a {
+                color: #cccccc;
+            }
+
+            body.dark-theme .form-control {
+                background-color: var(--input-bg-dark);
+                color: var(--input-text-dark);
+                border: 1px solid var(--input-border-dark);
+            }
+
+                body.dark-theme .form-control:focus {
+                    border-color: var(--primary-light);
+                    box-shadow: 0 0 0 0.25rem rgba(0, 0, 0, 0.25);
+                }
+
+        body.light-theme .register-link a {
+            color: transparent; /* Сделаем цвет текста прозрачным */
+            background: var(--register-gradient); /* Градиент для светлой темы */
+            -webkit-background-clip: text; /* Для Chrome и Safari */
+            background-clip: text; /* Для других браузеров */
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        /* Градиент для ссылки в тёмной теме */
+        body.dark-theme .register-link a {
+            color: transparent; /* Сделаем цвет текста прозрачным */
+            background: var(--register-gradient); /* Градиент для тёмной темы */
+            -webkit-background-clip: text; /* Для Chrome и Safari */
+            background-clip: text; /* Для других браузеров */
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+    /* Заголовок */
+    .login-title {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 25px;
+        color: #343a40;
+        font-weight: 600;
+    }
+
+    .title-word {
+        position: relative;
+        display: inline-block;
+    }
+
+        .title-word::after {
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--primary-gradient);
+            border-radius: 3px;
+        }
+
+    .login-container {
+        max-width: 500px;
+        margin: 2rem auto;
+        animation: fadeIn 0.5s ease-out;
+    }
+
+    @@keyframes fadeIn {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    .login-card {
+        border: none;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: var(--shadow-lg);
+        background: var(--card-bg-light);
+        position: relative;
+        transform: translateY(0);
+        transition: var(--transition);
+    }
+
+        .login-card::before {
+            content: "";
+            display: block;
+            height: 6px;
+            width: 100%;
+            background: var(--primary-gradient);
+        }
+
+        .login-card:hover {
+            box-shadow: 0 12px 20px rgba(250, 250, 250);
+            transform: translateY(-3px);
+        }
+
+    .login-avatar {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        background: var(--primary-gradient);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: -25px auto 15px;
+        border: none;
+        font-size: 2.5rem;
+        position: relative;
+        z-index: 2;
+        animation: float 4s ease-in-out infinite, bounce 2s ease-in-out infinite;
+        /* Свечение убрано */
+    }
+
+    body.dark-theme .login-avatar {
+        border: none;
+    }
+
+
+    @@keyframes float {
+        0%
+
+    {
+        transform: translateY(0px) rotate(0deg);
+    }
+
+    50% {
+        transform: translateY(-10px) rotate(5deg);
+    }
+
+    100% {
+        transform: translateY(0px) rotate(0deg);
+    }
+
+    }
+
+    @@keyframes bounce {
+        0%, 100%
+
+    {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+
+    }
+
+    .form-control {
+        border: 1px solid var(--input-border-light);
+        border-radius: 8px;
+        padding: 10px 15px;
+        background-color: var(--input-bg-light);
+        transition: var(--transition);
+        font-size: 0.95rem;
+    }
+
+        .form-control:hover {
+            border-color: #bdbdbd;
+            background-color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 0.25rem rgba(37, 117, 252, 0.25);
+        }
+
+    .btn-login {
+        border-radius: 8px;
+        padding: 12px 25px;
+        font-weight: 500;
+        transition: var(--transition);
+        background: var(--primary-gradient);
+        border: none;
+        color: white;
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+        width: 100%;
+        font-size: 1rem;
+        letter-spacing: 0.5px;
+    }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            color: white;
+        }
+
+        .btn-login::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, var(--primary-dark), var(--primary-light));
+            opacity: 0;
+            transition: var(--transition);
+            z-index: -1;
+        }
+
+        .btn-login:hover::after {
+            opacity: 1;
+        }
+
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-size: 0.875rem;
+        color: var(--text-muted);
+        font-weight: 500;
+    }
+
+    .text-danger {
+        font-size: 0.8rem;
+        margin-top: 0.25rem;
+    }
+
+    .register-link {
+        text-align: center;
+        margin-top: 1.5rem;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+    }
+
+        .register-link a {
+            color: transparent; /* Сделаем цвет текста прозрачным */
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); /* Градиент */
+            -webkit-background-clip: text; /* Для Chrome и Safari */
+            background-clip: text; /* Для других браузеров */
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+            .register-link a:hover {
+                text-decoration: underline;
+            }
+
+    /* Эффект тени на всей таблице */
+    table:hover {
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Темная тень по краям */
+    }
+
+    /* Или только для строк таблицы */
+    table tr:hover {
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Тень для строк */
+    }
+
+    /* Можно также добавить плавный переход для тени */
+    table, table tr {
+        transition: box-shadow 0.3s ease; /* Плавный переход */
+    }
+
+
+</style>
+

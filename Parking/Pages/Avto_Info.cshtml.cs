@@ -5,9 +5,18 @@ using Parking.Data;
 using Parking.Model;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Parking.Pages
 {
+    [Authorize]
+    public class HomeController : Controller
+    {
+        public IActionResult Index()
+        {
+            return View();
+        }
+    }
     public class Avto_InfoModel : PageModel
     {
         private readonly ApplicationDbContext _context;

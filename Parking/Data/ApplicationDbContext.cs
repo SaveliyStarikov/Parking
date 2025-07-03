@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Parking.Model;
+using Parking.Model.AuthApp;
 
 namespace Parking.Data
 {
@@ -17,6 +18,7 @@ namespace Parking.Data
 
         public DbSet<Car> Cars { get; set; } //таблица Cars, содержащая данные о книгах.
         public DbSet<Owner> Owners { get; set; } //таблица Parking_attendant, содержащая данные о студентах.
-        public DbSet<Place> Places { get; set; } //таблица Parking_space, хранящая информацию о выдачах книг студентам.
+        public DbSet<Place> Places { get; set; }
+        public DbSet<User> Users { get; set; }  //таблица Parking_space, хранящая информацию о выдачах книг студентам.
     }
 }
