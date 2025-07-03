@@ -20,11 +20,6 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
                         </li> 
                         <li class="nav-item">
                         <a class="nav-link text-dark" asp-page="/Avto_Info">Авто Инфо</a>
@@ -33,6 +28,18 @@
                             <a class="nav-link text-dark" asp-page="/ParkingSpaces">Парковочные места</a>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-page="/Owner_Info">Владельцы</a>
+                            <div class="navbar">
+                                    @if (User.Identity.IsAuthenticated)
+                                    {
+                                    <span>Здравствуйте, @User.Identity.Name!</span>
+                                    <a class="btn btn-outline-secondary" asp-controller="Account" asp-action="Logout">Выйти</a>
+                                    }
+                                    else
+                                    {
+                                    <a class="btn btn-outline-primary" asp-controller="Account" asp-action="Login">Войти</a>
+                                    <a class="btn btn-outline-success" asp-controller="Account" asp-action="Register">Зарегистрироваться</a>
+                                    }
+                            </div>
 
                     </ul>
                 </div>
